@@ -69,6 +69,15 @@ services:
     networks:
       - laravel
 
+  adminer:
+    image: "adminer"  # Adminer for database management
+    container_name: laravel-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - laravel
+
 networks:
   laravel:
     driver: bridge
