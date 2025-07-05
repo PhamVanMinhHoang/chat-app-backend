@@ -2,17 +2,19 @@
 
 namespace App\Providers;
 
+use Eloquents\UserRepository;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Passport\Passport;
+use UserRepositoryInterface;
 
-class AuthServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
      */
     public function register(): void
     {
-        //
+        $this->app->bind(UserRepositoryInterface::class,
+            UserRepository::class);
     }
 
     /**
@@ -20,6 +22,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::enablePasswordGrant();
+        //
     }
 }
