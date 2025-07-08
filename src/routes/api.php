@@ -14,12 +14,12 @@ Route::group([
     Route::group([
         'prefix' => 'auth',
     ], function () {
-        Route::post('/login', 'AuthController@login');
+        Route::post('/login', [AuthController::class, 'login']);
         Route::post('/register', [AuthController::class, 'register'] );
 
         Route::middleware('auth:api')->group(function () {
-            Route::post('/logout', 'AuthController@logout');
-            Route::get('/user', 'AuthController@user');
+            Route::post('/logout', [AuthController::class, 'logout']);
+            Route::get('/user', [AuthController::class, 'getUser']);
         });
     });
 });
