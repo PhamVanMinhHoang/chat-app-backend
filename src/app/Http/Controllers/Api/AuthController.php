@@ -43,17 +43,11 @@ class AuthController extends Controller
         try {
             $data = $request->validated();
 
-            if (!auth()->attempt($data)) {
-                return response()->json([
-                    'message' => 'Invalid credentials.',
-                ], 401);
-            }
-            $user = auth()->user();
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $result = $this->userService->loginUser($data);
             return response()->json([
                 'message' => 'Login successful.',
-                'user' => $user,
-                'token' => $token,
+                'user' => $result->user,
+                'token' => $result->token,
             ], 200);
 
         } catch (\Throwable $th) {
