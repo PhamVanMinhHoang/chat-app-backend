@@ -47,4 +47,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the Conversations that the user is part of.
+     */
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_user', 'user_id', 'conversation_id')
+            ->withPivot('role', 'is_active', 'joined_at')
+            ->withTimestamps();
+    }
 }
