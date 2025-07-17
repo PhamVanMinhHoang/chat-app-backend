@@ -4,9 +4,15 @@ namespace App\Repositories\Interfaces;
 
 interface ConversationRepositoryInterface
 {
-    public function getAllConversations();
+    /**
+     * Get all conversations for a specific user.
+     */
+    public function getAllConversations(int $userId);
 
-    public function getConversationById(int $conversationId);
+    /**
+     * Get a conversation by id that belongs to a specific user.
+     */
+    public function getConversationById(int $conversationId, int $userId);
 
     public function createConversation(array $data);
 

@@ -13,14 +13,14 @@ class ConversationService
         $this->conversationRepository = $conversationRepository;
     }
 
-    public function getAllConversations()
+    public function getAllConversations(int $userId)
     {
-        return $this->conversationRepository->getAllConversations();
+        return $this->conversationRepository->getAllConversations($userId);
     }
 
-    public function getConversationById(int $conversationId)
+    public function getConversationById(int $conversationId, int $userId)
     {
-        return $this->conversationRepository->getConversationById($conversationId);
+        return $this->conversationRepository->getConversationById($conversationId, $userId);
     }
 
     public function createConversation(array $data)
