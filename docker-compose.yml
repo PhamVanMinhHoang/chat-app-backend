@@ -68,11 +68,11 @@ services:
     networks:
       - laravel
 
-  pusher:
-    image: "docker.io/redis:alpine"  # placeholder vì Pusher không có image chính thức
-    container_name: laravel-pusher
-    networks:
-      - laravel
+#  pusher:
+#    image: "docker.io/redis:alpine"  # placeholder vì Pusher không có image chính thức
+#    container_name: laravel-pusher
+#    networks:
+#      - laravel
 
   adminer:
     image: "adminer"  # Adminer for database management

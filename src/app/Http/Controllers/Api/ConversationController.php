@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Conversations\StoreConversationRequest;
+use App\Http\Requests\Conversations\UpdateConversationRequest;
+use App\Http\Resources\ConversationResource;
+use App\Models\Conversation;
 use App\Services\ConversationService;
 use Illuminate\Http\JsonResponse;
 use Throwable;
@@ -17,7 +21,7 @@ class ConversationController
     public function index(): JsonResponse
     {
         try {
-            $conversations = $this->conversationService->getAllConversations(auth()->id());
+            $conversations = $this->conversationService->getAllConversations();
             return response()->json([
                 'success' => true,
                 'data' => $conversations,
@@ -33,16 +37,15 @@ class ConversationController
             ],500);
         }
     }
-    public function show($id): JsonResponse
+    public function show(Conversation $conversation): JsonResponse
     {
         try {
-            $conversation = $this->conversationService->getConversationById($id, auth()->id());
-            if (!$conversation) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cuộc trò chuyện không tồn tại',
-                ], 404);
-            }
+            $conversation = new ConversationResource($conversation->load([
+                'users:id,name',
+                'lastMessage',
+                'messages'=>fn($q)=> $q->latest()->take(50)
+            ]));
+
             return response()->json([
                 'success' => true,
                 'data' => $conversation,
@@ -61,17 +64,30 @@ class ConversationController
     /**
      * Create a new conversation.
      */
-    public function store(): JsonResponse
+    public function store(StoreConversationRequest $request): JsonResponse
     {
         try {
-            $data = request()->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-            ]);
+            $data = $request->validated();
+            if ($data['type']==='private') {
+                $existing = Conversation::where('type','private')
+                    ->whereHas('users', fn($q)=> $q->where('users.id',$request->user()->id))
+                    ->whereHas('users', fn($q)=> $q->where('users.id',$data['members'][0]))
+                    ->first();
+                if ($existing) {
+                    $conversation = new ConversationResource($existing->load('users:id,name'));
 
-            $data['user_id'] = auth()->id(); // Assuming the user is authenticated
-
-            $conversation = $this->conversationService->createConversation($data);
+                    return response()->json([
+                        'success' => true,
+                        'data' => $conversation,
+                    ], 201);
+                }
+            }
+            $conv = Conversation::create(['type'=>$data['type'],'name'=>$data['name'] ?? null]);
+            $conv->users()->attach($request->user()->id, ['role'=>'admin','joined_at'=>now()]);
+            foreach ($data['members'] as $id) {
+                $conv->users()->attach($id,['role'=>'member','joined_at'=>now()]);
+            }
+            $conversation = new ConversationResource($conv->load('users:id,name'));
 
             return response()->json([
                 'success' => true,
@@ -91,22 +107,23 @@ class ConversationController
     /**
      * Update an existing conversation.
      */
-    public function update($id): JsonResponse
+    public function update(UpdateConversationRequest $request, Conversation $conversation): JsonResponse
     {
         try {
-            $data = request()->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-            ]);
-
-            $conversation = $this->conversationService->updateConversation($id, $data);
-
-            if (!$conversation) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Cuộc trò chuyện không tồn tại hoặc bạn không có quyền sửa đổi',
-                ], 404);
+            $data = $request->validated();
+            if ($conversation->type==='group' && isset($data['name'])) {
+                $conversation->update(['name'=>$data['name']]);
             }
+            if ($conversation->type==='group' && isset($data['members'])) {
+                $sync=[];
+            foreach ($data['members'] as $id) {
+                    $sync[$id]=['role'=>'member','joined_at'=>now()];
+            }
+            $admin = $conversation->users()->wherePivot('role','admin')->first()->id;
+            $sync[$admin]=['role'=>'admin','joined_at'=>now()];
+            $conversation->users()->sync($sync);
+        }
+            $conversation = new ConversationResource($conversation->load('users:id,name'));
 
             return response()->json([
                 'success' => true,

@@ -15,7 +15,8 @@ class ConversationService
 
     public function getAllConversations()
     {
-        return $this->conversationRepository->getAllConversations();
+        $user = auth()->user();
+        return $this->conversationRepository->getAllConversations($user);
     }
 
     public function getConversationById(int $conversationId)
