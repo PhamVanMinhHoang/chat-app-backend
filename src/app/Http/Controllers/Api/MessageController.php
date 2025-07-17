@@ -48,7 +48,7 @@ class MessageController extends Controller
 
         foreach ($conversation->users as $member) {
         if ($member->id !== $request->user()->id) {
-            $member->notify(new \App\Notifications\NewMessageNotification(\$message));
+            $member->notify(new \App\Notifications\NewMessageNotification($message));
             }
         }
 

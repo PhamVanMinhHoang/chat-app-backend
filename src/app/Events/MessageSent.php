@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Http\Resources\MessageResource;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,6 +17,12 @@ class MessageSent implements ShouldBroadcast
         $this->message = $message;
         $this->conversationId = $conversationId;
     }
-    public function broadcastOn() { return new PresenceChannel('conversation.' . $this->conversationId); }
-    public function broadcastWith() { return ['message'=>new MessageResource($this->message)]; }
+    public function broadcastOn(): PresenceChannel
+    {
+        return new PresenceChannel('conversation.' . $this->conversationId);
+    }
+    public function broadcastWith(): array
+    {
+        return ['message'=>new MessageResource($this->message)];
+    }
 }
