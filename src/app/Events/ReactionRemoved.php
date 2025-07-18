@@ -2,28 +2,38 @@
 
 namespace App\Events;
 
-use App\Http\Resources\MessageResource;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcast
+class ReactionRemoved
 {
     use InteractsWithSockets, SerializesModels;
-    public $message;
+    public $messageId;
+    public $userId;
     protected $conversationId;
-    public function __construct($message, $conversationId)
+
+    public function __construct($messageId, $userId, $conversationId)
     {
-        $this->message = $message;
+        $this->messageId = $messageId;
+        $this->userId = $userId;
         $this->conversationId = $conversationId;
     }
+
     public function broadcastOn(): PresenceChannel
     {
         return new PresenceChannel('conversation.' . $this->conversationId);
     }
+
     public function broadcastWith(): array
     {
-        return ['message'=>new MessageResource($this->message)];
+        return [
+            'message_id' => $this->messageId,
+            'user_id' => $this->userId
+        ];
     }
 }

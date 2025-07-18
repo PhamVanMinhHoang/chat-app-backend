@@ -28,19 +28,15 @@ Route::group([
         });
     });
 
-    Route::group([
-        'prefix' => 'conversations',
-    ], function () {
-        Route::middleware(['auth:sanctum'])->group(function () {
-            Route::apiResource('conversations', ConversationController::class);
-            Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
-            Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::apiResource('conversations', ConversationController::class);
+        Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
+        Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);
 
-            Route::post('messages/{message}/reactions', [ReactionController::class, 'store']);
-            Route::delete('messages/{message}/reactions', [ReactionController::class, 'destroy']);
+        Route::post('messages/{message}/reactions', [ReactionController::class, 'store']);
+        Route::delete('messages/{message}/reactions', [ReactionController::class, 'destroy']);
 
-            Route::post('messages/{message}/attachments', [AttachmentController::class, 'store']);
-        });
+        Route::post('messages/{message}/attachments', [AttachmentController::class, 'store']);
     });
 });
 

@@ -38,4 +38,9 @@ class ConversationService
     {
         return $this->conversationRepository->deleteConversation($conversationId);
     }
+
+    public function getPrivateConversation(int $userId, int $otherUserId)
+    {
+        return $this->conversationRepository->getPrivateConversation($userId, $otherUserId);
+    }
 }

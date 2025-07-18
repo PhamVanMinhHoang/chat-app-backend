@@ -13,4 +13,5 @@ interface ConversationRepositoryInterface
     public function updateConversation(int $conversationId, array $data);
 
     public function deleteConversation(int $conversationId);
+    public function getPrivateConversation(int $userId, int $otherUserId);
 }

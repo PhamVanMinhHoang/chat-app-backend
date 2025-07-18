@@ -1,0 +1,6 @@
+# Bỏ qua toàn bộ storage (không copy vào build context)
+src/public/storage
+
+# Ngoài ra bạn thường cũng muốn ignore:
+src/vendor
+src/node_modules

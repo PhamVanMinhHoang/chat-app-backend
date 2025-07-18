@@ -2,28 +2,31 @@
 
 namespace App\Events;
 
-use App\Http\Resources\MessageResource;
+use App\Models\Attachment;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcast
+class AttachmentAdded implements ShouldBroadcast
 {
     use InteractsWithSockets, SerializesModels;
-    public $message;
+    public $attachment;
     protected $conversationId;
-    public function __construct($message, $conversationId)
+
+    public function __construct(Attachment $attachment, $conversationId)
     {
-        $this->message = $message;
+        $this->attachment = $attachment;
         $this->conversationId = $conversationId;
     }
+
     public function broadcastOn(): PresenceChannel
     {
         return new PresenceChannel('conversation.' . $this->conversationId);
     }
+
     public function broadcastWith(): array
     {
-        return ['message'=>new MessageResource($this->message)];
+        return ['attachment' => $this->attachment];
     }
 }

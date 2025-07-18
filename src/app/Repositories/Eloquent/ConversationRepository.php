@@ -66,4 +66,30 @@ class ConversationRepository implements  ConversationRepositoryInterface
         }
         return false;
     }
+
+    /**
+     * Lấy một cuộc trò chuyển private giữa hai người dùng
+     * @param int $userId
+     * @param int $otherUserId
+     * @return Conversation|null
+     * @throws Throwable
+     */
+    public function getPrivateConversation(int $userId, int $otherUserId): ?Conversation
+    {
+        try {
+            return Conversation::select('conversations.*')
+                ->join('conversation_user as cu1', function($join) use ($userId) {
+                    $join->on('cu1.conversation_id', '=', 'conversations.id')
+                        ->where('cu1.user_id', '=', $userId);
+                })
+                ->join('conversation_user as cu2', function($join) use ($otherUserId) {
+                    $join->on('cu2.conversation_id', '=', 'conversations.id')
+                        ->where('cu2.user_id', '=', $otherUserId);
+                })
+                ->where('conversations.type', 'private')
+                ->first();
+        } catch (Throwable $e) {
+            throw new Exception('Error fetching private conversation: ' . $e->getMessage());
+        }
+    }
 }

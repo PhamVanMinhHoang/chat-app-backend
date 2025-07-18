@@ -7,6 +7,14 @@ services:
     volumes:
       - ./src:/var/www:cached
     working_dir: /var/www
+    environment:
+      BROADCAST_DRIVER: pusher
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      PUSHER_APP_ID: ${PUSHER_APP_ID}
+      PUSHER_APP_KEY: ${PUSHER_APP_KEY}
+      PUSHER_APP_SECRET: ${PUSHER_APP_SECRET}
+      PUSHER_APP_CLUSTER: ${PUSHER_APP_CLUSTER}
     depends_on:
       - mysql
       - redis
@@ -67,12 +75,6 @@ services:
       - "8025:8025"
     networks:
       - laravel
-
-#  pusher:
-#    image: "docker.io/redis:alpine"  # placeholder vì Pusher không có image chính thức
-#    container_name: laravel-pusher
-#    networks:
-#      - laravel
 
   adminer:
     image: "adminer"  # Adminer for database management

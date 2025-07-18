@@ -69,10 +69,16 @@ class ConversationController
         try {
             $data = $request->validated();
             if ($data['type']==='private') {
-                $existing = Conversation::where('type','private')
-                    ->whereHas('users', fn($q)=> $q->where('users.id',$request->user()->id))
-                    ->whereHas('users', fn($q)=> $q->where('users.id',$data['members'][0]))
-                    ->first();
+                if (count($data['members']) !== 1) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Cuộc trò chuyện riêng tư chỉ có thể có một thành viên khác ngoài bạn',
+                    ], 400);
+                }
+                $existing = $this->conversationService->getPrivateConversation(
+                    $request->user()->id,
+                    $data['members'][0]
+                );
                 if ($existing) {
                     $conversation = new ConversationResource($existing->load('users:id,name'));
 
