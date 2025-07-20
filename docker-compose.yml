@@ -6,6 +6,7 @@ services:
     container_name: laravel-app
     volumes:
       - ./src:/var/www:cached
+      - ./.env:/var/www/.env:ro
     working_dir: /var/www
     environment:
       BROADCAST_DRIVER: pusher
