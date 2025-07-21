@@ -11,10 +11,16 @@ class MessageResource extends JsonResource
         return [
             'id' => $this->id,
             'conversation_id' => $this->conversation_id,
-            'user_id' => $this->sender_id,
+            'sender_id' => $this->sender_id,
             'content' => $this->content,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
+
+            // Include sender information
+            'sender' => [
+                'id' => $this->whenLoaded('sender')->id,
+                'name' => $this->whenLoaded('sender')->name,
+            ],
         ];
     }
 }
