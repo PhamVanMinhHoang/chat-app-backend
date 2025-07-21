@@ -57,4 +57,43 @@ class AuthController extends Controller
             ], 400);
         }
     }
+
+    /**
+     * Revoke the current user's access token.
+     */
+    public function logout(\Illuminate\Http\Request $request): JsonResponse
+    {
+        try {
+            $token = $request->user()?->currentAccessToken();
+            if ($token) {
+                $token->delete();
+            }
+
+            return response()->json([
+                'message' => 'Logout successful.',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Logout failed.',
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+    }
+
+    /**
+     * Return the authenticated user's information.
+     */
+    public function getUser(\Illuminate\Http\Request $request): JsonResponse
+    {
+        try {
+            return response()->json([
+                'user' => $request->user(),
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Failed to retrieve user.',
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+    }
 }
