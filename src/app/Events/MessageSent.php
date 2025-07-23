@@ -4,10 +4,9 @@ namespace App\Events;
 
 use App\Http\Resources\MessageResource;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -19,10 +18,9 @@ class MessageSent implements ShouldBroadcast
         $this->message = $message;
         $this->conversationId = $conversationId;
     }
-    public function broadcastOn(): PrivateChannel
+    public function broadcastOn(): PresenceChannel
     {
-        Log::info('Broadcasting message sent event for conversation ID: ' . $this->conversationId);
-        return new PrivateChannel('conversation.' . $this->conversationId);
+        return new PresenceChannel('conversation.' . $this->conversationId);
     }
     public function broadcastWith(): array
     {
