@@ -42,7 +42,7 @@ return [
         ],
 
         'api' => [
-            'driver' => 'sanctum',
+            'driver' => 'sanctum', // ✅ PHẢI là sanctum
             'provider' => 'users',
         ],
     ],

@@ -40,13 +40,3 @@ Route::group([
     });
 });
 
-// routes/channels.php
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Broadcasting\PresenceChannel;
-
-Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    return $user->conversations()->where('conversations.id', $conversationId)->exists();
-});
-
-Broadcast::channel('presence.conversations', PresenceChannel::class);
-
