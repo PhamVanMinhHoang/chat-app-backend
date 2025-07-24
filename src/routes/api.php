@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ReactionController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,11 +25,15 @@ Route::group([
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AuthController::class, 'logout']);
-            Route::get('/user', [AuthController::class, 'getUser']);
         });
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
+        // Routes for user profile
+        Route::get('/user', [UserController::class, 'getUser']);
+        Route::post('/user/avatar', [UserController::class, 'updateAvatar']);
+
+        // Routes for conversations, messages, reactions, and attachments
         Route::apiResource('conversations', ConversationController::class);
         Route::get('conversations/{conversation}/messages', [MessageController::class, 'index']);
         Route::post('conversations/{conversation}/messages', [MessageController::class, 'store']);

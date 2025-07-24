@@ -22,6 +22,7 @@ class ConversationFactory extends Factory
         return [
             'type' => $isGroup ? 'group' : 'private',
             'name' => $isGroup ? $this->faker->words(3, true) : null,
+            'avatar' => 'avatars/' . $this->faker->image('storage/app/public/avatars', 200, 200, null, false),
         ];
     }
 }

@@ -24,7 +24,7 @@ class ConversationController
             $conversations = $this->conversationService->getAllConversations();
             return response()->json([
                 'success' => true,
-                'data' => $conversations,
+                'data' => ConversationResource::collection($conversations),
             ], 200);
         } catch (Throwable $th) {
             // Handle exceptions, possibly log them or return a response

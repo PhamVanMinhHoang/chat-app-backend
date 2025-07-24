@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('conversation_user', function (Blueprint $table) {
-            $table->index('conversation_id');
+        Schema::table('conversations', function (Blueprint $table) {
+            $table->string('avatar')->nullable()->after('name');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('conversation_user', function (Blueprint $table) {
-            $table->dropIndex(['conversation_id']);
+        Schema::table('conversations', function (Blueprint $table) {
+            $table->dropColumn('avatar');
         });
     }
 };

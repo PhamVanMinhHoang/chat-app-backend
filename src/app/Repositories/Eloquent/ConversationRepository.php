@@ -29,7 +29,7 @@ class ConversationRepository implements  ConversationRepositoryInterface
             return $user->conversations()
                 ->select('conversations.id','conversations.name','conversations.type','conversations.last_message_id','conversations.updated_at')
                 ->with([
-                    'users:id,name',
+                    'users:id,name,avatar',
                     'lastMessage:id,conversation_id,sender_id,content,created_at'
                 ])
                 ->orderByDesc('conversations.updated_at')

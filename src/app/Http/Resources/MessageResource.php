@@ -13,14 +13,17 @@ class MessageResource extends JsonResource
             'conversation_id' => $this->conversation_id,
             'sender_id' => $this->sender_id,
             'content' => $this->content,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->toDateTimeString() : null,
 
             // Include sender information
-            'sender' => [
-                'id' => $this->whenLoaded('sender')->id,
-                'name' => $this->whenLoaded('sender')->name,
-            ],
+            'sender' => $this->whenLoaded('sender', function () {
+                return [
+                    'id' => $this->sender->id,
+                    'name' => $this->sender->name,
+                    'avatar' => $this->sender->avatar ? asset('storage/' . $this->sender->avatar) : null,
+                ];
+            }),
         ];
     }
 }
