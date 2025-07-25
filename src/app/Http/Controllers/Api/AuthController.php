@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 
@@ -22,12 +23,14 @@ class AuthController extends Controller
             $user = $this->userService->registerUser($request->validated());
 
             return response()->json([
+                'success' => true,
                 'message' => 'User registered successfully.',
-                'user' => $user,
+                'user' => new UserResource($user),
             ], 201);
 
         } catch (\Throwable $th) {
             return response()->json([
+                'success' => false,
                 'message' => 'Registration failed.',
                 'error' => $th->getMessage(),
             ], 400);
@@ -46,7 +49,7 @@ class AuthController extends Controller
             $result = $this->userService->loginUser($data);
             return response()->json([
                 'message' => 'Login successful.',
-                'user' => $result->user,
+                'user' => new UserResource($result->user),
                 'token' => $result->token,
             ], 200);
 
