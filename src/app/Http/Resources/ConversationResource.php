@@ -12,7 +12,7 @@ class ConversationResource extends  JsonResource
             'id'             => $this->id,
             'type'           => $this->type,
             'name'           => $this->name,
-            'avatar'        => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'avatar'        => ($this->avatar && $this->type == 'group') ? asset('storage/' . $this->avatar) : null,
             'last_message'   => new MessageResource($this->whenLoaded('lastMessage')),
             'users'          => UserResource::collection($this->whenLoaded('users')),
             'updated_at'     => $this->updated_at->toDateTimeString(),

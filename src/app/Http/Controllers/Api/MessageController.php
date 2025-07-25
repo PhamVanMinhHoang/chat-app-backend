@@ -24,7 +24,7 @@ class MessageController extends Controller
         try {
             //        $this->authorize('view',$conversation);
             $msgs = $conversation->messages()
-                ->with('sender:id,name','reactions','attachments')
+                ->with('sender:id,name,avatar','reactions','attachments')
                 ->latest()
                 ->paginate(50);
 

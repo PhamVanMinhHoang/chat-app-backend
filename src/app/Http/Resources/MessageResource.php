@@ -21,7 +21,7 @@ class MessageResource extends JsonResource
                 return [
                     'id' => $this->sender->id,
                     'name' => $this->sender->name,
-                    'avatar' => $this->sender->avatar ? asset('storage/' . $this->sender->avatar) : null,
+                    'avatar' => $this->sender->avatar ? asset('storage/' . $this->sender->avatar) : asset('storage/' . 'avatars/default.png'),
                 ];
             }),
         ];

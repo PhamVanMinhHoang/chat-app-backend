@@ -13,7 +13,7 @@ class UserResource extends JsonResource
         return [
             'id'   => $this->id,
             'name' => $this->name,
-            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : asset('storage/' . 'avatars/default.png'),
             'is_current_user' => $user && $user->id === $this->id,
         ];
     }
